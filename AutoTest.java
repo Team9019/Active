@@ -121,11 +121,12 @@ public class AutoTest extends LinearOpMode {
 
 
         // 1) Drop Arm
-        robot.bigAss.setPosition(0.6);
+        robot.bigAss.setPosition(0.65);
 
 
         // 2) Sense Color
-        while ( opModeIsActive() && runtime.seconds() < 10)
+        runtime.reset();
+        while ( opModeIsActive() && runtime.seconds() < 5)
         {
             telemetry.addData("SenseJewel", "Red:" + robot.Color.red());
             telemetry.addData("SenseJewel", "Blue:" + robot.Color.blue());
@@ -133,20 +134,20 @@ public class AutoTest extends LinearOpMode {
 
             idle();
         }
-        if (robot.Color.red() >= 1 && robot.Color.red() <= 8) {
+        if (robot.Color.red() >= 1 && robot.Color.red() <= 100) {
             redFound = true;
         }
-        if (robot.Color.blue() >= 2 && robot.Color.blue() <= 8) {
+        if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100) {
             blueFound = true;
         }
 
 
         // 3) Lift Block
-        robot.leftClaw.setPosition(0.0);
-        robot.rightClaw.setPosition(1.0);
-        while ( runtime.milliseconds() < 5) {
-            robot.liftMotor.setPower(0.2);
-        }
+       // robot.leftClaw.setPosition(0.0);
+       // robot.rightClaw.setPosition(1.0);
+       // while ( runtime.milliseconds() < 5) {
+       //     robot.liftMotor.setPower(0.2);
+       // }
 
 
         // 4) Hit Jewel
@@ -154,23 +155,28 @@ public class AutoTest extends LinearOpMode {
          * Replace With Encoder Drive
          */
         if (redFound) {
-            while ( runtime.milliseconds() < 5) {
-                robot.leftFront.setPower(-0.2);
-                robot.leftBack.setPower(-0.2);
-                robot.rightFront.setPower(-0.2);
-                robot.rightBack.setPower(-0.2);
-            }
+                robot.leftFront.setPower(-0.5);
+                robot.leftBack.setPower(-0.5);
+                robot.rightFront.setPower(-0.5);
+                robot.rightBack.setPower(-0.5);
+
+
 
         }
         if (blueFound) {
-            while ( runtime.milliseconds() < 5) {
-                robot.leftFront.setPower(0.2);
-                robot.leftBack.setPower(0.2);
-                robot.rightFront.setPower(0.2);
-                robot.rightBack.setPower(0.2);
-            }
-        }
 
+                robot.leftFront.setPower(0.5);
+                robot.leftBack.setPower(0.5);
+                robot.rightFront.setPower(0.5);
+                robot.rightBack.setPower(0.5);
+
+
+        }
+        runtime.reset();
+        while ( runtime.milliseconds() < 500) {
+            telemetry.addData("Status", runtime.toString());
+            telemetry.update();
+        }
 
         // 5) Retract Arm
         robot.bigAss.setPosition(0.0);
