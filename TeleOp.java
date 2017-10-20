@@ -52,9 +52,7 @@ private HardRobot robot = new HardRobot();
     private Servo rightClaw;
     private Servo bigAss;
 
-    double leftPower;
-    double rightPower;
-    double liftPower;
+
 
     @Override
     public void runOpMode() {
@@ -92,7 +90,9 @@ private HardRobot robot = new HardRobot();
         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
-
+            double leftPower;
+            double rightPower;
+            double liftPower;
 
 
 

@@ -91,8 +91,10 @@ public class AutoTest extends LinearOpMode {
         robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
         robot.leftClaw.setPosition(0.1);            // S4: Stop and close the claw.
         robot.rightClaw.setPosition(0.9);
+        robot.bigAss.setPosition(0.0);
         sleep(1000);     // pause for servos to move
 
         //telemetry.addData("Path", "Complete");
@@ -119,11 +121,11 @@ public class AutoTest extends LinearOpMode {
 
 
         // 1) Drop Arm
-        robot.bigAss.setPosition(0.75);
+        robot.bigAss.setPosition(0.6);
 
 
         // 2) Sense Color
-        while ( opModeIsActive() && runtime.seconds() < 60)
+        while ( opModeIsActive() && runtime.seconds() < 10)
         {
             telemetry.addData("SenseJewel", "Red:" + robot.Color.red());
             telemetry.addData("SenseJewel", "Blue:" + robot.Color.blue());
@@ -175,7 +177,10 @@ public class AutoTest extends LinearOpMode {
 
 
         // 6) Forward/Right/Forward
-
+        robot.leftFront.getCurrentPosition();
+        robot.leftBack.getCurrentPosition();
+        robot.rightFront.getCurrentPosition();
+        robot.rightBack.getCurrentPosition();
 
         // 7) Place Block
 
