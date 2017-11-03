@@ -51,12 +51,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
  */
 
-@Autonomous(name="Auto <3", group="Autonomous <3")
+@Autonomous(name="Red Left", group="Autonomous")
 
-public class AutoTest extends LinearOpMode {
+public class RedLeft extends LinearOpMode {
 
     /* Declare OpMode members. */
-    private  HardRobot        robot   = new HardRobot();   // Use a Pushbot's hardware
+    private  HardRobot        robot   = new HardRobot();
     private ElapsedTime     runtime = new ElapsedTime();
 
     private static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
@@ -66,6 +66,8 @@ public class AutoTest extends LinearOpMode {
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     private static final double     DRIVE_SPEED             = 0.6;
     private static final double     TURN_SPEED              = 0.5;
+    private static final double     LIFT_SPEED              = 0.7;
+    private static final double     JWL_DST                 = 3;
     private static boolean blueFound = false;
     private static boolean redFound = false;
     @Override
@@ -92,15 +94,16 @@ public class AutoTest extends LinearOpMode {
         robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        robot.leftClaw.setPosition(0.1);            // S4: Stop and close the claw.
-        robot.rightClaw.setPosition(0.9);
+        robot.leftClaw.setPosition(0.9);            // S4: Stop and close the claw.
+        robot.rightClaw.setPosition(0.1);
         robot.bigAss.setPosition(0.0);
-        sleep(1000);     // pause for servos to move
+       // sleep(1000);
+        // pause for servos to move
 
         //telemetry.addData("Path", "Complete");
         //telemetry.update();
+        robot.Color.enableLed(false);
 
-        robot.Color.enableLed(true);
 
         // Send telemetry message to indicate successful Encoder reset
        // telemetry.addData("Path0",  "Starting at %7d :%7d",
@@ -121,7 +124,7 @@ public class AutoTest extends LinearOpMode {
 
 
         // 1) Drop Arm
-        robot.bigAss.setPosition(0.65);
+        robot.bigAss.setPosition(0.73);
 
 
         // 2) Sense Color
@@ -134,52 +137,42 @@ public class AutoTest extends LinearOpMode {
 
             idle();
         }
+        robot.Color.enableLed(true);
         if (robot.Color.red() >= 1 && robot.Color.red() <= 100) {
             redFound = true;
         }
         if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100) {
             blueFound = true;
         }
-
+        robot.Color.enableLed(false);
 
         // 3) Lift Block
-       // robot.leftClaw.setPosition(0.0);
-       // robot.rightClaw.setPosition(1.0);
-       // while ( runtime.milliseconds() < 5) {
-       //     robot.liftMotor.setPower(0.2);
-       // }
+        robot.leftClaw.setPosition(0.5);
+        robot.rightClaw.setPosition(0.8);
+        sleep(200);
+
+        encoderLift(LIFT_SPEED, 3, 2.0);
+
 
 
         // 4) Hit Jewel
-        /**
-         * Replace With Encoder Drive
-         */
         if (redFound) {
-                robot.leftFront.setPower(-0.5);
-                robot.leftBack.setPower(-0.5);
-                robot.rightFront.setPower(-0.5);
-                robot.rightBack.setPower(-0.5);
+                encoderDrive(DRIVE_SPEED, -3, -3, 2.0);
 
 
 
         }
         if (blueFound) {
 
-                robot.leftFront.setPower(0.5);
-                robot.leftBack.setPower(0.5);
-                robot.rightFront.setPower(0.5);
-                robot.rightBack.setPower(0.5);
+               encoderDrive(DRIVE_SPEED, 3, 3, 2.0);
 
 
         }
-        runtime.reset();
-        while ( runtime.milliseconds() < 500) {
-            telemetry.addData("Status", runtime.toString());
-            telemetry.update();
-        }
+
 
         // 5) Retract Arm
         robot.bigAss.setPosition(0.0);
+        sleep(500);
 
 
         // 6) Forward/Right/Forward
@@ -187,8 +180,23 @@ public class AutoTest extends LinearOpMode {
         robot.leftBack.getCurrentPosition();
         robot.rightFront.getCurrentPosition();
         robot.rightBack.getCurrentPosition();
+        if (redFound) {
+            encoderDrive(DRIVE_SPEED, JWL_DST + 24 + 12, JWL_DST + 24 + 12, 4.0);
+        }
+        else if (blueFound) {
+            encoderDrive(DRIVE_SPEED, -JWL_DST + 24 + 12, -JWL_DST + 24 + 12, 4.0);
+        }
+
+        encoderDrive(TURN_SPEED, 3, -3, 2.0);
+        encoderDrive(DRIVE_SPEED, 10, 10, 2.0);
 
         // 7) Place Block
+        encoderLift(LIFT_SPEED, -3, 1.0);
+
+        robot.leftClaw.setPosition(0.9);
+        robot.rightClaw.setPosition(0.1);
+
+        encoderDrive(DRIVE_SPEED, 2, 2, 1.0);
 
     }
 
@@ -248,6 +256,7 @@ public class AutoTest extends LinearOpMode {
                                             robot.rightFront.getCurrentPosition(),
                                             robot.rightBack.getCurrentPosition());
                 telemetry.update();
+                idle();
             }
 
 
@@ -262,6 +271,60 @@ public class AutoTest extends LinearOpMode {
             robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+    private void encoderLift(double speed,
+                              double liftInches,
+                              double timeoutS) {
+        int newLiftTarget;
+
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLiftTarget = robot.leftFront.getCurrentPosition() + robot.leftBack.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
+
+            robot.liftMotor.setTargetPosition(newLiftTarget);
+
+
+            // Turn On RUN_TO_POSITION
+            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.liftMotor.setPower(Math.abs(speed));
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.liftMotor.isBusy() )) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d", newLiftTarget);
+                telemetry.addData("Path2",  "Running at %7d", robot.liftMotor.getCurrentPosition());
+
+                telemetry.update();
+                idle();
+            }
+
+
+            // Stop all motion;
+            robot.liftMotor.setPower(0);
+
+
+            // Turn off RUN_TO_POSITION
+            robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
             //  sleep(250);   // optional pause after each move
         }

@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp <3", group="Linear Opmode")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Linear Opmode")
 
 public class TeleOp extends LinearOpMode {
 private HardRobot robot = new HardRobot();
@@ -59,6 +59,7 @@ private HardRobot robot = new HardRobot();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
@@ -71,8 +72,11 @@ private HardRobot robot = new HardRobot();
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         bigAss = hardwareMap.get(Servo.class, "bigAss");
 
-        leftClaw.setPosition(1.0);
-        rightClaw.setPosition(0.0);
+        robot.Color.enableLed(true);
+        robot.Color.enableLed(false);
+
+        leftClaw.setPosition(0.9);
+        rightClaw.setPosition(0.1);
         bigAss.setPosition(0.0);
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -102,19 +106,14 @@ private HardRobot robot = new HardRobot();
              liftPower  = -gamepad2.left_stick_y ;
 
             if (gamepad2.left_bumper) {
-                leftClaw.setPosition(0.0);
+                leftClaw.setPosition(0.2);
             }else{
-                leftClaw.setPosition(0.25);
+                leftClaw.setPosition(0.1);
             }
             if (gamepad2.right_bumper) {
-                rightClaw.setPosition(1.0);
+                rightClaw.setPosition(0.7);
             }else{
-                rightClaw.setPosition(0.75);
-            }
-            if (gamepad2.a) {
-                bigAss.setPosition(0.75);
-            }else{
-                bigAss.setPosition(0.0);
+                rightClaw.setPosition(0.9);
             }
 
             // Send calculated power to wheels
