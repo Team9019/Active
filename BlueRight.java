@@ -51,9 +51,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
  */
 
-@Autonomous(name="Red Left", group="Autonomous")
+@Autonomous(name="Blue Right", group="Autonomous")
 
-public class RedLeft extends LinearOpMode {
+public class BlueRight extends LinearOpMode {
 
     /* Declare OpMode members. */
     private  HardRobot        robot   = new HardRobot();
@@ -156,19 +156,14 @@ public class RedLeft extends LinearOpMode {
 
 
         // 4) Hit Jewel
-        if (redFound) {
-                encoderDrive(DRIVE_SPEED, -JWL_DST, -JWL_DST, 2.0);
-
-
-
+        if (redFound)
+        {
+                encoderDrive(DRIVE_SPEED, JWL_DST, JWL_DST, 2.0);
         }
-        if (blueFound) {
-
-               encoderDrive(DRIVE_SPEED, JWL_DST, JWL_DST, 2.0);
-
-
+        if (blueFound)
+        {
+               encoderDrive(DRIVE_SPEED, -JWL_DST, -JWL_DST, 2.0);
         }
-
 
         // 5) Retract Arm
         robot.bigAss.setPosition(0.0);
@@ -181,10 +176,10 @@ public class RedLeft extends LinearOpMode {
         robot.rightFront.getCurrentPosition();
         robot.rightBack.getCurrentPosition();
         if (redFound) {
-            encoderDrive(DRIVE_SPEED, JWL_DST + 24 + 12, JWL_DST + 24 + 12, 4.0);
+            encoderDrive(DRIVE_SPEED, (JWL_DST + 24 + 12)*(-1), (JWL_DST + 24 + 12)*(-1), 4.0);
         }
         else if (blueFound) {
-            encoderDrive(DRIVE_SPEED, -JWL_DST + 24 + 12, -JWL_DST + 24 + 12, 4.0);
+            encoderDrive(DRIVE_SPEED, (-JWL_DST + 24 + 12)*(-1), (-JWL_DST + 24 + 12)*(-1), 4.0);
         }
 
         encoderDrive(TURN_SPEED, 3, -3, 2.0);
@@ -211,19 +206,23 @@ public class RedLeft extends LinearOpMode {
     private void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+        int newLeftFrontTarget;
+        int newLeftBackTarget;
+        int newRightFrontTarget;
+        int newRightBackTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.leftFront.getCurrentPosition() + robot.leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rightFront.getCurrentPosition() + robot.rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.leftFront.setTargetPosition(newLeftTarget);
-            robot.leftBack.setTargetPosition(newLeftTarget);
-            robot.rightFront.setTargetPosition(newRightTarget);
-            robot.rightBack.setTargetPosition(newRightTarget);
+            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newRightBackTarget = robot.rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.leftFront.setTargetPosition(newLeftFrontTarget);
+            robot.leftBack.setTargetPosition(newLeftBackTarget);
+            robot.rightFront.setTargetPosition(newRightFrontTarget);
+            robot.rightBack.setTargetPosition(newRightBackTarget);
 
             // Turn On RUN_TO_POSITION
             robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -245,17 +244,17 @@ public class RedLeft extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                                            robot.leftFront.getCurrentPosition(),
-                                            robot.leftBack.getCurrentPosition(),
-                                            robot.rightFront.getCurrentPosition(),
-                                            robot.rightBack.getCurrentPosition());
-                telemetry.update();
+                // telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                // telemetry.addData("Path2",  "Running at %7d :%7d",
+                //                             robot.leftFront.getCurrentPosition(),
+                //                             robot.leftBack.getCurrentPosition(),
+                //                             robot.rightFront.getCurrentPosition(),
+                //                             robot.rightBack.getCurrentPosition());
+                // telemetry.update();
                 idle();
             }
 

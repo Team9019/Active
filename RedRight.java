@@ -157,14 +157,14 @@ public class RedRight extends LinearOpMode {
 
         // 4) Hit Jewel
         if (redFound) {
-                encoderDrive(DRIVE_SPEED, -3, -3, 2.0);
+                encoderDrive(DRIVE_SPEED, -JWL_DST, -JWL_DST, 2.0);
 
 
 
         }
         if (blueFound) {
 
-               encoderDrive(DRIVE_SPEED, 3, 3, 2.0);
+               encoderDrive(DRIVE_SPEED, JWL_DST, JWL_DST, 2.0);
 
 
         }
