@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Linear Opmode")
 
@@ -97,6 +98,7 @@ private HardRobot robot = new HardRobot();
             double leftPower;
             double rightPower;
             double liftPower;
+            double slidePower;
 
 
 
@@ -104,6 +106,7 @@ private HardRobot robot = new HardRobot();
              leftPower  = -gamepad1.left_stick_y ;
              rightPower = -gamepad1.right_stick_y ;
              liftPower  = -gamepad2.left_stick_y ;
+             slidePower = -gamepad1.left_stick_x + -gamepad1.right_stick_x ;
 
             if (gamepad2.left_bumper) {
                 leftClaw.setPosition(0.2);
@@ -117,11 +120,12 @@ private HardRobot robot = new HardRobot();
             }
 
             // Send calculated power to wheels
-            leftFront.setPower(leftPower);
-            rightFront.setPower(rightPower);
-            leftBack.setPower(leftPower);
-            rightBack.setPower(rightPower);
+            leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));
+            rightFront.setPower(Range.clip(rightPower - slidePower, -1.0, 1.0));
+            leftBack.setPower(Range.clip(leftPower - slidePower, -1.0, 1.0));
+            rightBack.setPower(Range.clip(rightPower + slidePower, -1.0, 1.0));
             liftMotor.setPower(liftPower);
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
