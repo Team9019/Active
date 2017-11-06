@@ -106,7 +106,8 @@ private HardRobot robot = new HardRobot();
              leftPower  = -gamepad1.left_stick_y ;
              rightPower = -gamepad1.right_stick_y ;
              liftPower  = -gamepad2.left_stick_y ;
-             slidePower = -gamepad1.left_stick_x + -gamepad1.right_stick_x ;
+             slidePower = -gamepad1.left_stick_x + (-gamepad1.right_stick_x) ;
+
 
             if (gamepad2.left_bumper) {
                 leftClaw.setPosition(0.2);
@@ -120,16 +121,18 @@ private HardRobot robot = new HardRobot();
             }
 
             // Send calculated power to wheels
-            leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));
-            rightFront.setPower(Range.clip(rightPower - slidePower, -1.0, 1.0));
-            leftBack.setPower(Range.clip(leftPower - slidePower, -1.0, 1.0));
-            rightBack.setPower(Range.clip(rightPower + slidePower, -1.0, 1.0));
+            leftFront.setPower(Range.clip(leftPower+slidePower, -1.0, 1.0));
+            rightFront.setPower(Range.clip(rightPower-slidePower, -1.0, 1.0));
+            leftBack.setPower(Range.clip(leftPower-slidePower, -1.0, 1.0));
+            rightBack.setPower(Range.clip(rightPower+slidePower, -1.0, 1.0));
+
             liftMotor.setPower(liftPower);
+
 
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower, slidePower, liftPower);
             telemetry.update();
         }
     }
