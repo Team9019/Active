@@ -103,6 +103,7 @@ public class RedRight extends LinearOpMode {
         //telemetry.addData("Path", "Complete");
         //telemetry.update();
         robot.Color.enableLed(false);
+        robot.Color.enableLed(true);
 
 
         // Send telemetry message to indicate successful Encoder reset
@@ -137,14 +138,14 @@ public class RedRight extends LinearOpMode {
 
             idle();
         }
-        robot.Color.enableLed(true);
+
         if (robot.Color.red() >= 1 && robot.Color.red() <= 100) {
             redFound = true;
         }
         if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100) {
             blueFound = true;
         }
-        robot.Color.enableLed(false);
+
 
         // 3) Lift Block
         robot.leftClaw.setPosition(0.5);
