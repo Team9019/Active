@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -46,9 +47,10 @@ public class HardRobot
     public DcMotor leftBack = null;
     public DcMotor rightBack = null;
     public DcMotor liftMotor = null;
+    public DcMotor armMotor = null;
     public Servo leftClaw;
     public Servo rightClaw;
-    public Servo bigAss;
+    public Servo colorServo;
     public ModernRoboticsI2cColorSensor Color;
 
     // public static final double MID_SERVO       =  0.5 ;
@@ -60,12 +62,14 @@ public class HardRobot
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardRobot(){
+    public HardRobot()
+    {
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap)
+    {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -75,15 +79,26 @@ public class HardRobot
         leftBack = hwMap.get(DcMotor.class, "leftBack");
         rightBack = hwMap.get(DcMotor.class, "rightBack");
         liftMotor = hwMap.get(DcMotor.class, "liftMotor");
+        armMotor = hwMap.get(DcMotor.class, "armMotor");
+
         leftClaw = hwMap.get(Servo.class, "leftClaw");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
-        bigAss = hwMap.get(Servo.class, "bigAss");
+        colorServo = hwMap.get(Servo.class, "colorServo");
         Color = (ModernRoboticsI2cColorSensor) hwMap.colorSensor.get("Color");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
+        liftMotor.setDirection(DcMotor.Direction.REVERSE);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        Color.enableLed(true);
+        Color.enableLed(false);
+
+        leftClaw.setPosition(0.9);
+        rightClaw.setPosition(0.1);
+        colorServo.setPosition(0.1);
 
         // Set all motors to zero power
         leftFront.setPower(0);
@@ -94,9 +109,7 @@ public class HardRobot
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        // leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         // Define and initialize ALL installed servos.
         //  leftClaw  = hwMap.get(Servo.class, "left_hand");

@@ -39,21 +39,21 @@ import com.qualcomm.robotcore.util.Range;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="TeleOp", group="Linear Opmode")
 
-public class TeleOp extends LinearOpMode {
-private HardRobot robot = new HardRobot();
+public class TeleOp extends LinearOpMode
+{
+    private HardRobot robot = new HardRobot();
+    private ElapsedTime runtime = new ElapsedTime();
 
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront = null;
     private DcMotor rightFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
     private DcMotor liftMotor = null;
+    private DcMotor armMotor = null;
     private Servo leftClaw;
     private Servo rightClaw;
-    private Servo bigAss;
-
-
+    //private DcMotor armMotor = null;
 
     @Override
     public void runOpMode() {
@@ -72,14 +72,13 @@ private HardRobot robot = new HardRobot();
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        bigAss = hardwareMap.get(Servo.class, "bigAss");
+        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
 
-        robot.Color.enableLed(true);
-        robot.Color.enableLed(false);
+        //  robot.Color.enableLed(true);
+     //   robot.Color.enableLed(false);
 
         leftClaw.setPosition(0.9);
         rightClaw.setPosition(0.1);
-        bigAss.setPosition(0.0);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -87,50 +86,53 @@ private HardRobot robot = new HardRobot();
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
+        while (opModeIsActive())
+        {
             // Setup a variable for each drive wheel to save power level for telemetry
             double leftPower;
             double rightPower;
             double liftPower;
             double slidePower;
+            double armPower;
 
-
-
-
-            
              leftPower  = -gamepad1.left_stick_y ;
              rightPower = -gamepad1.right_stick_y ;
              liftPower  = -gamepad2.left_stick_y ;
-             slidePower = ((-gamepad1.left_stick_x) + (-gamepad1.right_stick_x)) ;
+             slidePower = gamepad1.left_stick_x + gamepad1.right_stick_x ;
+             armPower = gamepad1.right_trigger - gamepad1.left_trigger ;
 
-
-            if (gamepad2.left_bumper) {
-                leftClaw.setPosition(0.2);
-            }else{
-                leftClaw.setPosition(0.9);
+            if (gamepad2.left_bumper)
+            {
+                robot.leftClaw.setPosition(0.1);
+            }
+            else
+            {
+                robot.leftClaw.setPosition(0.9);
             }
             if (gamepad2.right_bumper) {
-                rightClaw.setPosition(0.7);
-            }else{
-                rightClaw.setPosition(0.1);
+                robot.rightClaw.setPosition(0.9);
+            }
+            else
+            {
+                robot.rightClaw.setPosition(0.1);
             }
 
+
             // Send calculated power to wheels
-            leftFront.setPower(Range.clip(leftPower - slidePower, -1.0, 1.0));
-            rightFront.setPower(Range.clip(rightPower + slidePower, -1.0, 1.0));
-            leftBack.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));
-            rightBack.setPower(Range.clip(rightPower - slidePower, -1.0, 1.0));
+            leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));
+            rightFront.setPower(Range.clip(rightPower - slidePower, -1.0, 1.0));
+            leftBack.setPower(Range.clip(leftPower - slidePower, -1.0, 1.0));
+            rightBack.setPower(Range.clip(rightPower + slidePower, -1.0, 1.0));
 
             liftMotor.setPower(liftPower);
-
-
+            armMotor.setPower(armPower);
 
             // Show the elapsed game time and wheel power.
            // telemetry.addData("Status", "Run Time: " + runtime.toString());

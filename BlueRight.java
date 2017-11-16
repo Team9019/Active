@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  *  This code ALSO requires that the drive Motors have been configured such that a positive
@@ -59,12 +60,12 @@ public class BlueRight extends LinearOpMode {
     private  HardRobot        robot   = new HardRobot();
     private ElapsedTime     runtime = new ElapsedTime();
 
-    private static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    private static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;    // eg: TETRIX Motor Encoder
+    private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     private static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     private static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-    private static final double     DRIVE_SPEED             = 0.6;
+    private static final double     DRIVE_SPEED             = 0.4;
     private static final double     TURN_SPEED              = 0.5;
     private static final double     LIFT_SPEED              = 0.7;
     private static final double     JWL_DST                 = 3;
@@ -94,16 +95,14 @@ public class BlueRight extends LinearOpMode {
         robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        robot.leftClaw.setPosition(0.9);            // S4: Stop and close the claw.
-        robot.rightClaw.setPosition(0.1);
-        robot.bigAss.setPosition(0.0);
+        //robot.leftClaw.setPosition(0.9);            // S4: Stop and close the claw.
+        //robot.rightClaw.setPosition(0.1);
+        //robot.colorServo.setPosition(0.0);
        // sleep(1000);
         // pause for servos to move
 
         //telemetry.addData("Path", "Complete");
         //telemetry.update();
-        robot.Color.enableLed(false);
-        robot.Color.enableLed(true);
 
 
         // Send telemetry message to indicate successful Encoder reset
@@ -125,12 +124,14 @@ public class BlueRight extends LinearOpMode {
 
 
         // 1) Drop Arm
-        robot.bigAss.setPosition(0.73);
+        robot.colorServo.setPosition(0.73);
 
 
         // 2) Sense Color
+        robot.Color.enableLed(true);
+
         runtime.reset();
-        while ( opModeIsActive() && runtime.seconds() < 5)
+        while ( opModeIsActive() && runtime.seconds() < 2)
         {
             telemetry.addData("SenseJewel", "Red:" + robot.Color.red());
             telemetry.addData("SenseJewel", "Blue:" + robot.Color.blue());
@@ -145,15 +146,15 @@ public class BlueRight extends LinearOpMode {
         if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100) {
             blueFound = true;
         }
+        robot.Color.enableLed(false);
 
 
         // 3) Lift Block
-        robot.leftClaw.setPosition(0.5);
-        robot.rightClaw.setPosition(0.8);
+        robot.leftClaw.setPosition(0.1);
+        robot.rightClaw.setPosition(0.9);
         sleep(200);
 
-        encoderLift(LIFT_SPEED, 3, 2.0);
-
+        encoderLift(LIFT_SPEED, 5, 2.0);
 
 
         // 4) Hit Jewel
@@ -167,24 +168,23 @@ public class BlueRight extends LinearOpMode {
         }
 
         // 5) Retract Arm
-        robot.bigAss.setPosition(0.0);
+        robot.colorServo.setPosition(0.0);
         sleep(500);
 
 
         // 6) Forward/Right/Forward
-        robot.leftFront.getCurrentPosition();
-        robot.leftBack.getCurrentPosition();
-        robot.rightFront.getCurrentPosition();
-        robot.rightBack.getCurrentPosition();
-        if (redFound) {
+        if (redFound)
+        {
             encoderDrive(DRIVE_SPEED, (JWL_DST + 24 + 12)*(-1), (JWL_DST + 24 + 12)*(-1), 4.0);
         }
-        else if (blueFound) {
+        else if (blueFound)
+        {
             encoderDrive(DRIVE_SPEED, (-JWL_DST + 24 + 12)*(-1), (-JWL_DST + 24 + 12)*(-1), 4.0);
         }
 
-        encoderDrive(TURN_SPEED, 3, -3, 2.0);
-        encoderDrive(DRIVE_SPEED, 10, 10, 2.0);
+        encoderDrive(TURN_SPEED, 13, -13, 2.0);
+        encoderDrive(DRIVE_SPEED, 4, 4, 2.0);
+
 
         // 7) Place Block
         encoderLift(LIFT_SPEED, -3, 1.0);
@@ -204,14 +204,68 @@ public class BlueRight extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    private void encoderDrive(double speed,
+    public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
+        int newLeftFrontTarget;
+        int newLeftBackTarget;
+        int newRightFrontTarget;
+        int newRightBackTarget;
 
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newRightBackTarget = robot.rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.leftFront.setTargetPosition(newLeftFrontTarget);
+            robot.leftBack.setTargetPosition(newLeftBackTarget);
+            robot.rightFront.setTargetPosition(newRightFrontTarget);
+            robot.rightBack.setTargetPosition(newRightBackTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.leftFront.setPower(Math.abs(speed));
+            robot.leftBack.setPower(Math.abs(speed));
+            robot.rightFront.setPower(Math.abs(speed));
+            robot.rightBack.setPower(Math.abs(speed));
+
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
+
+
+                idle();
+            }
+
+
+            // Stop all motion;
+            robot.leftFront.setPower(0);
+            robot.leftBack.setPower(0);
+            robot.rightFront.setPower(0);
+            robot.rightBack.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        }
     }
-    private void encoderLift(double speed,
-                              double liftInches,
-                              double timeoutS) {
+    public void encoderLift(double speed,
+                            double liftInches,
+                            double timeoutS) {
         int newLiftTarget;
 
 
@@ -233,12 +287,6 @@ public class BlueRight extends LinearOpMode {
             robot.liftMotor.setPower(Math.abs(speed));
 
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (robot.liftMotor.isBusy() )) {
@@ -261,6 +309,78 @@ public class BlueRight extends LinearOpMode {
 
 
             //  sleep(250);   // optional pause after each move
+        }
+    }
+    public void encoderSlide(double speed,
+                             double Inches, String Direction,
+                             double timeoutS) {
+
+        int newLeftFrontTarget;
+        int newLeftBackTarget;
+        int newRightFrontTarget;
+        int newRightBackTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive())
+        {
+
+            // Determine new target position, and pass to motor controller
+            if (Direction.equals("L"))
+            {
+                newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
+                newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+                newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+                newRightBackTarget = robot.rightBack.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
+            }
+            else // (Direction.equals("R"))
+            {
+                newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+                newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
+                newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
+                newRightBackTarget = robot.rightBack.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
+            }
+            robot.leftFront.setTargetPosition(newLeftFrontTarget);
+            robot.leftBack.setTargetPosition(newLeftBackTarget);
+            robot.rightFront.setTargetPosition(newRightFrontTarget);
+            robot.rightBack.setTargetPosition(newRightBackTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            robot.leftFront.setPower(Math.abs(speed));
+            robot.leftBack.setPower(Math.abs(speed));
+            robot.rightFront.setPower(Math.abs(speed));
+            robot.rightBack.setPower(Math.abs(speed));
+
+
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy()))
+            {
+
+
+                idle();
+            }
+
+
+            // Stop all motion;
+            robot.leftFront.setPower(0);
+            robot.leftBack.setPower(0);
+            robot.rightFront.setPower(0);
+            robot.rightBack.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
     }
 }

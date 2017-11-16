@@ -51,26 +51,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
  */
 
-@Autonomous(name="Red Left", group="Autonomous")
+@Autonomous(name="BLUE NE ", group="Autonomous")
 
-public class RedLeft extends LinearOpMode {
+public class BLUENE extends LinearOpMode {
 
     /* Declare OpMode members. */
     private  HardRobot        robot   = new HardRobot();
     private ElapsedTime     runtime = new ElapsedTime();
 
-    private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;    // eg: TETRIX Motor Encoder
-    private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    private static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    private static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
     private static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     private static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-    private static final double     DRIVE_SPEED             = 0.4;
+    private static final double     DRIVE_SPEED             = 0.6;
     private static final double     TURN_SPEED              = 0.5;
     private static final double     LIFT_SPEED              = 0.7;
-    private static final double     JWL_DST                 = 3;
+    private static final double     JWL_DST                 = 2;
     private static boolean blueFound = false;
     private static boolean redFound = false;
-
     @Override
     public void runOpMode() {
 
@@ -95,11 +94,16 @@ public class RedLeft extends LinearOpMode {
         robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
+        robot.leftClaw.setPosition(0.9);            // S4: Stop and close the claw.
+        robot.rightClaw.setPosition(0.1);
+        robot.colorServo.setPosition(0.0);
+       // sleep(1000);
         // pause for servos to move
 
         //telemetry.addData("Path", "Complete");
         //telemetry.update();
-
+        robot.Color.enableLed(false);
+        robot.Color.enableLed(true);
 
 
         // Send telemetry message to indicate successful Encoder reset
@@ -125,9 +129,8 @@ public class RedLeft extends LinearOpMode {
 
 
         // 2) Sense Color
-        robot.Color.enableLed(true);
         runtime.reset();
-        while ( opModeIsActive() && runtime.seconds() < 2)
+        while ( opModeIsActive() && runtime.seconds() < 5)
         {
             telemetry.addData("SenseJewel", "Red:" + robot.Color.red());
             telemetry.addData("SenseJewel", "Blue:" + robot.Color.blue());
@@ -136,20 +139,17 @@ public class RedLeft extends LinearOpMode {
             idle();
         }
 
-        if (robot.Color.red() >= 1 && robot.Color.red() <= 100)
-        {
+        if (robot.Color.red() >= 1 && robot.Color.red() <= 100) {
             redFound = true;
         }
-        if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100)
-        {
+        if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100) {
             blueFound = true;
         }
-        robot.Color.enableLed(false);
 
 
         // 3) Lift Block
-        robot.leftClaw.setPosition(0.1);
-        robot.rightClaw.setPosition(0.9);
+        robot.leftClaw.setPosition(0.5);
+        robot.rightClaw.setPosition(0.8);
         sleep(200);
 
         encoderLift(LIFT_SPEED, 5, 2.0);
@@ -157,40 +157,74 @@ public class RedLeft extends LinearOpMode {
 
 
         // 4) Hit Jewel
-        if (redFound)
-        {
-                encoderDrive(DRIVE_SPEED, -JWL_DST, -JWL_DST, 2.0);
+        if (redFound) {
+                encoderDrive(DRIVE_SPEED, JWL_DST, JWL_DST, 2.0);
+
+
+
         }
-        if (blueFound)
-        {
-               encoderDrive(DRIVE_SPEED, JWL_DST, JWL_DST, 2.0);
+        if (blueFound) {
+
+               encoderDrive(DRIVE_SPEED, -JWL_DST, -JWL_DST, 2.0);
+
+
         }
 
 
         // 5) Retract Arm
-        robot.colorServo.setPosition(0.1);
+        robot.colorServo.setPosition(0.0);
         sleep(500);
 
 
         // 6) Forward/Right/Forward
-        if (redFound) {
-            encoderDrive(DRIVE_SPEED, -JWL_DST + 24 + 12, -JWL_DST + 24 + 12, 4.0);
-        }
-        else if (blueFound) {
-            encoderDrive(DRIVE_SPEED, JWL_DST + 24 + 12, JWL_DST + 24 + 12, 4.0);
-        }
+       // if (redFound)
+       // {
+        //    runtime.reset();
+       //     while (runtime.milliseconds() < 1000);
+        //    {
+        //////        robot.leftFront.setPower(-0.4);
+        //        robot.leftBack.setPower(-0.4);
+        //        robot.rightFront.setPower(-0.4);
+         //       robot.rightBack.setPower(-0.4);
+         //   }
+       // }
+      //  else if (blueFound)
+      //  {
+        //    runtime.reset();
+       //     while (runtime.milliseconds() < 1000)
+         //   {
+        //        robot.leftFront.setPower(0.4);
+        //        robot.leftBack.setPower(0.4);
+        //        robot.rightFront.setPower(0.4);
+        //        robot.rightBack.setPower(0.4);
+        //    }
+     //   }
 
-        encoderDrive(TURN_SPEED, 13, -13, 2.0);
-        encoderDrive(DRIVE_SPEED, 6, 6, 2.0);
+
+     //   runtime.reset();
+     //   while (runtime.milliseconds() < 200)
+     //   {
+     //       robot.leftFront.setPower(.5);
+     //       robot.leftBack.setPower(.5);
+     //       robot.rightFront.setPower(-.5);
+     //       robot.rightBack.setPower(-.5);
+     //   }
 
 
         // 7) Place Block
-        encoderLift(LIFT_SPEED, -3, 1.0);
+       // encoderLift(LIFT_SPEED, -3, 1.0);
 
-        robot.leftClaw.setPosition(0.9);
-        robot.rightClaw.setPosition(0.1);
+       // robot.leftClaw.setPosition(0.9);
+      //  robot.rightClaw.setPosition(0.1);
 
-        encoderDrive(DRIVE_SPEED, 2, 2, 1.0);
+       // runtime.reset();
+       // while (runtime.milliseconds() < 200)
+     //   {
+       //     robot.leftFront.setPower(.5);
+     //       robot.leftBack.setPower(.5);
+     //       robot.rightFront.setPower(.5);
+      //      robot.rightBack.setPower(.5);
+      //  }
 
     }
 
@@ -205,23 +239,19 @@ public class RedLeft extends LinearOpMode {
     private void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
-        int newLeftFrontTarget;
-        int newLeftBackTarget;
-        int newRightFrontTarget;
-        int newRightBackTarget;
+        int newLeftTarget;
+        int newRightTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            newRightBackTarget = robot.rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.leftFront.setTargetPosition(newLeftFrontTarget);
-            robot.leftBack.setTargetPosition(newLeftBackTarget);
-            robot.rightFront.setTargetPosition(newRightFrontTarget);
-            robot.rightBack.setTargetPosition(newRightBackTarget);
+            newLeftTarget = robot.leftFront.getCurrentPosition() + robot.leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = robot.rightFront.getCurrentPosition() + robot.rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            robot.leftFront.setTargetPosition(newLeftTarget);
+            robot.leftBack.setTargetPosition(newLeftTarget);
+            robot.rightFront.setTargetPosition(newRightTarget);
+            robot.rightBack.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
             robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -247,13 +277,13 @@ public class RedLeft extends LinearOpMode {
                    (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
 
                 // Display it for the driver.
-//                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-//                telemetry.addData("Path2",  "Running at %7d :%7d",
-//                                            robot.leftFront.getCurrentPosition(),
-//                                            robot.leftBack.getCurrentPosition(),
-//                                            robot.rightFront.getCurrentPosition(),
-//                                            robot.rightBack.getCurrentPosition());
-//                telemetry.update();
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                                            robot.leftFront.getCurrentPosition(),
+                                            robot.leftBack.getCurrentPosition(),
+                                            robot.rightFront.getCurrentPosition(),
+                                            robot.rightBack.getCurrentPosition());
+                telemetry.update();
                 idle();
             }
 
