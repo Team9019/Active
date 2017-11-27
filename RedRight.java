@@ -127,7 +127,7 @@ public class RedRight extends LinearOpMode
         robot.rightClaw.setPosition(0.9);
         sleep(200);
 
-        encoderLift(LIFT_SPEED, 5, 2.0);
+        encoderLift(LIFT_SPEED, 6, 2.0);
 
 
         // 4) Hit Jewel
@@ -155,7 +155,7 @@ public class RedRight extends LinearOpMode
         }
 
 
-        encoderSlide(DRIVE_SPEED, 10, "L" , 2.0);
+        encoderSlide(DRIVE_SPEED, 12, "L" , 2.0);
 
         encoderDrive(DRIVE_SPEED, 6, 6, 2.0);
 
