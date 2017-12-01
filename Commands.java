@@ -56,6 +56,11 @@ public class Commands
 
     LinearOpMode opMode;
 
+    /* Constructor */
+    public Commands()
+{
+
+}
     public void encoderDrive(double speed,
                               double leftInches, double rightInches,
                               double timeoutS) {
@@ -126,7 +131,7 @@ public class Commands
         if (opMode.opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLiftTarget = robot.leftFront.getCurrentPosition() + robot.leftBack.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
+            newLiftTarget = robot.liftMotor.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
 
             robot.liftMotor.setTargetPosition(newLiftTarget);
 

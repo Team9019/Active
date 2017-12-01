@@ -83,8 +83,8 @@ public class TeleOp extends LinearOpMode
 
         leftClaw.setPosition(0.9);
         rightClaw.setPosition(0.1);
-        armServo.setPosition(0.5);
-        relicServo.setPosition(0.5);
+        armServo.setPosition(0.02);
+        relicServo.setPosition(0.2);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -131,23 +131,23 @@ public class TeleOp extends LinearOpMode
             }
             if (gamepad2.y)
             {
-                armServo.setPosition(0.3);
+                armServo.setPosition(0.05);
             }
             if (gamepad2.x)
             {
-                armServo.setPosition(0.0);
-            }
-            if (gamepad2.a)
-            {
-                relicServo.setPosition(0.0);
+                armServo.setPosition(0.02);
             }
             if (gamepad1.a)
             {
                 relicServo.setPosition(0.5);
             }
+            if (gamepad2.a)
+            {
+                relicServo.setPosition(0.2);
+            }
             if (gamepad2.b)
             {
-                armServo.setPosition(0.5);
+                armServo.setPosition(0.12);
             }
 
 

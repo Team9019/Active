@@ -84,11 +84,13 @@ public class RedRight extends LinearOpMode
         robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // Wait for the game to start (driver presses PLAY)
@@ -238,7 +240,7 @@ public class RedRight extends LinearOpMode
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLiftTarget = robot.leftFront.getCurrentPosition() + robot.leftBack.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
+            newLiftTarget = robot.liftMotor.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
 
             robot.liftMotor.setTargetPosition(newLiftTarget);
 
