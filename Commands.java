@@ -57,9 +57,9 @@ public class Commands
     LinearOpMode opMode;
 
     /* Constructor */
-    public Commands()
+    public Commands(LinearOpMode opMode)
 {
-
+this.opMode = opMode;
 }
     public void encoderDrive(double speed,
                               double leftInches, double rightInches,

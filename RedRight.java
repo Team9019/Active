@@ -50,7 +50,7 @@ public class RedRight extends LinearOpMode
 {
     /* Declare OpMode members. */
     private  HardRobot        robot   = new HardRobot();
-    private  Commands         cmd     = new Commands();
+    private  Commands         cmd     = new Commands(this);
     private ElapsedTime     runtime = new ElapsedTime();
 
     private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;    // eg: TETRIX Motor Encoder
@@ -125,8 +125,8 @@ public class RedRight extends LinearOpMode
 
 
         // 3) Lift Block
-        robot.leftClaw.setPosition(0.1);
-        robot.rightClaw.setPosition(0.9);
+        robot.leftClaw.setPosition(0.9);
+        robot.rightClaw.setPosition(0.1);
         sleep(200);
 
         cmd.encoderLift(cmd.LIFT_SPEED, 6, 2.0);
@@ -165,8 +165,8 @@ public class RedRight extends LinearOpMode
         // 7) Place Block
         cmd.encoderLift(cmd.LIFT_SPEED, -5, 1.0);
 
-        robot.leftClaw.setPosition(0.9);
-        robot.rightClaw.setPosition(0.1);
+        robot.leftClaw.setPosition(0.1);
+        robot.rightClaw.setPosition(0.9);
         sleep(200);
         cmd.encoderDrive(cmd.DRIVE_SPEED, 2, 2, 1.0);
 
