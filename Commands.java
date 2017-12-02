@@ -35,11 +35,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Hardware;
 
 
 public class Commands
 {
-    private  HardRobot        robot   = new HardRobot();
+    //private  HardRobot        robot   = new HardRobot();
     private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;    // eg: TETRIX Motor Encoder
     private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     private static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
@@ -55,11 +56,13 @@ public class Commands
     private ElapsedTime runtime  = new ElapsedTime();
 
     LinearOpMode opMode;
+    private HardRobot robot;
 
     /* Constructor */
-    public Commands(LinearOpMode opMode)
+    public Commands(LinearOpMode opMode, HardRobot nrobot)
 {
 this.opMode = opMode;
+this.robot = nrobot;
 }
     public void encoderDrive(double speed,
                               double leftInches, double rightInches,

@@ -50,7 +50,7 @@ public class RedRight extends LinearOpMode
 {
     /* Declare OpMode members. */
     private  HardRobot        robot   = new HardRobot();
-    private  Commands         cmd     = new Commands(this);
+    private  Commands         cmd     = new Commands(this, robot);
     private ElapsedTime     runtime = new ElapsedTime();
 
     private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;    // eg: TETRIX Motor Encoder
@@ -129,7 +129,7 @@ public class RedRight extends LinearOpMode
         robot.rightClaw.setPosition(0.1);
         sleep(200);
 
-        encoderLift(cmd.LIFT_SPEED, 6, 2.0);
+        cmd.encoderLift(cmd.LIFT_SPEED, 6, 2.0);
 
 
         // 4) Hit Jewel
@@ -230,52 +230,52 @@ public class RedRight extends LinearOpMode
 //
 //        }
 //    }
-    public void encoderLift(double speed, double liftInches,
-                            double timeoutS) {
-        int newLiftTarget;
-
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-            // Determine new target position, and pass to motor controller
-            newLiftTarget = robot.liftMotor.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
-
-            robot.liftMotor.setTargetPosition(newLiftTarget);
-
-
-           // Turn On RUN_TO_POSITION
-            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            // reset the timeout time and start motion.
-           runtime.reset();
-            robot.liftMotor.setPower(Math.abs(speed));
-
-
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.liftMotor.isBusy() )) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d", newLiftTarget);
-                telemetry.addData("Path2",  "Running at %7d", robot.liftMotor.getCurrentPosition());
-
-                telemetry.update();
-                idle();
-            }
-
-
-            // Stop all motion;
-            robot.liftMotor.setPower(0);
-
-
-            // Turn off RUN_TO_POSITION
-     robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-            //  sleep(250);   // optional pause after each move
-        }
-    }
+//    public void encoderLift(double speed, double liftInches,
+//                            double timeoutS) {
+//        int newLiftTarget;
+//
+//
+//        // Ensure that the opmode is still active
+//        if (opModeIsActive()) {
+//            // Determine new target position, and pass to motor controller
+//            newLiftTarget = robot.liftMotor.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
+//
+//            robot.liftMotor.setTargetPosition(newLiftTarget);
+//
+//
+//           // Turn On RUN_TO_POSITION
+//            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//
+//            // reset the timeout time and start motion.
+//           runtime.reset();
+//            robot.liftMotor.setPower(Math.abs(speed));
+//
+//
+//            while (opModeIsActive() &&
+//                    (runtime.seconds() < timeoutS) &&
+//                    (robot.liftMotor.isBusy() )) {
+//
+//                // Display it for the driver.
+//                telemetry.addData("Path1",  "Running to %7d", newLiftTarget);
+//                telemetry.addData("Path2",  "Running at %7d", robot.liftMotor.getCurrentPosition());
+//
+//                telemetry.update();
+//                idle();
+//            }
+//
+//
+//            // Stop all motion;
+//            robot.liftMotor.setPower(0);
+//
+//
+//            // Turn off RUN_TO_POSITION
+//     robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//
+//            //  sleep(250);   // optional pause after each move
+//        }
+//    }
 //    public void encoderSlide(double speed,
 //                             double Inches, String Direction,
 //                             double timeoutS) {
