@@ -191,7 +191,7 @@ public class RedLeft extends LinearOpMode {
         robot.rightClaw.setPosition(0.1);
 
         encoderDrive(DRIVE_SPEED, 2, 2, 1.0);
-
+encoderDrive(DRIVE_SPEED, -2,-2,1.0);
     }
 
     /*

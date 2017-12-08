@@ -175,11 +175,11 @@ public class BlueRight extends LinearOpMode {
         // 6) Forward/Right/Forward
         if (redFound)
         {
-            encoderDrive(DRIVE_SPEED, (JWL_DST + 24 + 12)*(-1), (JWL_DST + 24 + 12)*(-1), 4.0);
+            encoderDrive(DRIVE_SPEED, (JWL_DST + 24 + 9)*(-1), (JWL_DST + 24 + 9)*(-1), 4.0);
         }
         else if (blueFound)
         {
-            encoderDrive(DRIVE_SPEED, (-JWL_DST + 24 + 12)*(-1), (-JWL_DST + 24 + 12)*(-1), 4.0);
+            encoderDrive(DRIVE_SPEED, (-JWL_DST + 24 + 9)*(-1), (-JWL_DST + 24 + 9)*(-1), 4.0);
         }
 
         encoderDrive(TURN_SPEED, 13, -13, 2.0);
@@ -193,11 +193,11 @@ public class BlueRight extends LinearOpMode {
         robot.rightClaw.setPosition(0.1);
 
         encoderDrive(DRIVE_SPEED, 2, 2, 1.0);
-
+        encoderDrive(DRIVE_SPEED, -2,-2,1.0);
     }
 
     /*
-     *  Method to perfmorm a relative move, based on encoder counts.
+     *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
      *  1) Move gets to the desired position

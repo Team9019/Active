@@ -60,7 +60,8 @@ public class TeleOp extends LinearOpMode
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
+        double relicServoSpot;
+        relicServoSpot=0.2;
         robot.init(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -112,7 +113,7 @@ public class TeleOp extends LinearOpMode
              rightPower = -gamepad1.right_stick_y ;
              liftPower  = -gamepad2.left_stick_y ;
              slidePower = gamepad1.left_stick_x + gamepad1.right_stick_x ;
-             armPower = gamepad1.right_trigger - gamepad1.left_trigger ;
+             armPower = gamepad2.right_trigger - gamepad2.left_trigger ;
 
             if (gamepad2.left_bumper)
             {
@@ -131,20 +132,33 @@ public class TeleOp extends LinearOpMode
             }
             if (gamepad2.y)
             {
-                armServo.setPosition(0.05);
+                //armServo.setPosition(0.05);
+                armServo.setPosition(0.08);
             }
             if (gamepad2.x)
             {
                 armServo.setPosition(0.02);
             }
-            if (gamepad1.a)
+            //if (gamepad1.a)
             {
-                relicServo.setPosition(0.5);
+               //relicServo.setPosition(0.5);
+            }
+            //if (gamepad2.a)
+            {
+                //relicServo.setPosition(0.2);
             }
             if (gamepad2.a)
-            {
-                relicServo.setPosition(0.2);
-            }
+           // {
+                //if (relicServoSpot == 0.2)
+                {
+                    relicServo.setPosition(0.70);
+                    relicServoSpot = 0.70;
+                } else
+                    {
+                    relicServo.setPosition(0.2);
+                    relicServoSpot = 0.2;
+                }
+           // }
             if (gamepad2.b)
             {
                 armServo.setPosition(0.12);
