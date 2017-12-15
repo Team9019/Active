@@ -52,6 +52,8 @@ public class TeleOp extends LinearOpMode
     private DcMotor armMotor = null;
     private Servo leftClaw;
     private Servo rightClaw;
+    private Servo lunderClaw;
+    private Servo runderClaw;
     private Servo armServo;
     private Servo relicServo;
 
@@ -74,6 +76,8 @@ public class TeleOp extends LinearOpMode
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        lunderClaw = hardwareMap.get(Servo.class, "lunderClaw");
+        runderClaw = hardwareMap.get(Servo.class, "runderClaw");
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         armServo= hardwareMap.get(Servo.class, "armServo");
         relicServo = hardwareMap.get(Servo.class, "relicServo");
@@ -84,6 +88,8 @@ public class TeleOp extends LinearOpMode
 
         leftClaw.setPosition(0.9);
         rightClaw.setPosition(0.1);
+        lunderClaw.setPosition(0.1);
+        runderClaw.setPosition(0.9);
         armServo.setPosition(0.02);
         relicServo.setPosition(0.2);
 
@@ -113,27 +119,31 @@ public class TeleOp extends LinearOpMode
              rightPower = -gamepad1.right_stick_y ;
              liftPower  = -gamepad2.left_stick_y ;
              slidePower = gamepad1.left_stick_x + gamepad1.right_stick_x ;
-             armPower = gamepad2.right_trigger - gamepad2.left_trigger ;
+             armPower = -gamepad2.right_stick_y ;
 
             if (gamepad2.left_bumper)
             {
                 robot.leftClaw.setPosition(0.1);
+
             }
             else
             {
                 robot.leftClaw.setPosition(0.9);
+
             }
             if (gamepad2.right_bumper) {
                 robot.rightClaw.setPosition(0.9);
+
             }
             else
             {
                 robot.rightClaw.setPosition(0.1);
+
             }
             if (gamepad2.y)
             {
-                //armServo.setPosition(0.05);
-                armServo.setPosition(0.08);
+                armServo.setPosition(0.05);
+                //armServo.setPosition(0.08);
             }
             if (gamepad2.x)
             {
@@ -147,23 +157,39 @@ public class TeleOp extends LinearOpMode
             {
                 //relicServo.setPosition(0.2);
             }
-            if (gamepad2.a)
-           // {
-                //if (relicServoSpot == 0.2)
-                {
-                    relicServo.setPosition(0.70);
-                    relicServoSpot = 0.70;
-                } else
-                    {
-                    relicServo.setPosition(0.2);
-                    relicServoSpot = 0.2;
-                }
+
            // }
             if (gamepad2.b)
             {
                 armServo.setPosition(0.12);
             }
+            if (gamepad2.a)
 
+            {
+                relicServo.setPosition(0.70);
+                relicServoSpot = 0.70;
+            }
+            else
+            {
+                relicServo.setPosition(0.2);
+                relicServoSpot = 0.2;
+            }
+            if (gamepad2.left_trigger == 1)
+            {
+                robot.lunderClaw.setPosition(0.7);
+            }
+            else
+            {
+                robot.lunderClaw.setPosition(0.1);
+            }
+            if (gamepad2.right_trigger == 1)
+            {
+                robot.runderClaw.setPosition(0.3);
+            }
+            else
+            {
+                robot.runderClaw.setPosition(0.9);
+            }
 
             // Send calculated power to wheels
             leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));

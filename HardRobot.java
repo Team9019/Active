@@ -50,6 +50,8 @@ public class HardRobot
     public DcMotor armMotor = null;
     public Servo leftClaw;
     public Servo rightClaw;
+    public Servo lunderClaw;
+    public Servo runderClaw;
     public Servo colorServo;
     public ModernRoboticsI2cColorSensor Color;
 
@@ -83,6 +85,8 @@ public class HardRobot
 
         leftClaw = hwMap.get(Servo.class, "leftClaw");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
+        lunderClaw = hwMap.get(Servo.class, "lunderClaw");
+        runderClaw = hwMap.get(Servo.class, "runderClaw");
         colorServo = hwMap.get(Servo.class, "colorServo");
         Color = (ModernRoboticsI2cColorSensor) hwMap.colorSensor.get("Color");
 
@@ -98,6 +102,8 @@ public class HardRobot
 
         leftClaw.setPosition(0.9);
         rightClaw.setPosition(0.1);
+        lunderClaw.setPosition(0.9);
+        runderClaw.setPosition(0.1);
         colorServo.setPosition(0.1);
 
         // Set all motors to zero power
