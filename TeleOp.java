@@ -62,8 +62,8 @@ public class TeleOp extends LinearOpMode
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        double relicServoSpot;
-        relicServoSpot=0.2;
+
+
         robot.init(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -86,12 +86,6 @@ public class TeleOp extends LinearOpMode
         //  robot.Color.enableLed(true);
      //   robot.Color.enableLed(false);
 
-        leftClaw.setPosition(0.9);
-        rightClaw.setPosition(0.1);
-        lunderClaw.setPosition(0.1);
-        runderClaw.setPosition(0.9);
-        armServo.setPosition(0.02);
-        relicServo.setPosition(0.2);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -166,17 +160,17 @@ public class TeleOp extends LinearOpMode
             if (gamepad2.a)
 
             {
-                relicServo.setPosition(0.70);
-                relicServoSpot = 0.70;
+                relicServo.setPosition(0.8);
+
             }
             else
             {
-                relicServo.setPosition(0.2);
-                relicServoSpot = 0.2;
+                relicServo.setPosition(0.35);
+
             }
             if (gamepad2.left_trigger == 1)
             {
-                robot.lunderClaw.setPosition(0.7);
+                robot.lunderClaw.setPosition(0.5);
             }
             else
             {
@@ -184,11 +178,15 @@ public class TeleOp extends LinearOpMode
             }
             if (gamepad2.right_trigger == 1)
             {
-                robot.runderClaw.setPosition(0.3);
+                robot.runderClaw.setPosition(0.5);
             }
             else
             {
                 robot.runderClaw.setPosition(0.9);
+            }
+            if (gamepad1.a)
+            {
+                armServo.setPosition(0.115);
             }
 
             // Send calculated power to wheels

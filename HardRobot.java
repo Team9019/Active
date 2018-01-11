@@ -102,8 +102,8 @@ public class HardRobot
 
         leftClaw.setPosition(0.9);
         rightClaw.setPosition(0.1);
-        lunderClaw.setPosition(0.9);
-        runderClaw.setPosition(0.1);
+        lunderClaw.setPosition(0.5);
+        runderClaw.setPosition(0.5);
         colorServo.setPosition(0.1);
 
         // Set all motors to zero power

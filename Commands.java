@@ -49,7 +49,7 @@ public class Commands
     public static final double     DRIVE_SPEED             = 0.4;
     public static final double     TURN_SPEED              = 0.5;
     public static final double     LIFT_SPEED              = 0.7;
-    public static final double     JWL_DST                 = 3;
+    public static final double     JWL_DST                 = 2;
     public static boolean blueFound = false;
     public static boolean redFound = false;
 

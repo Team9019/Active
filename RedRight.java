@@ -129,7 +129,7 @@ public class RedRight extends LinearOpMode
         robot.rightClaw.setPosition(0.9);
         sleep(200);
 
-        cmd.encoderLift(cmd.LIFT_SPEED, 6, 2.0);
+        cmd.encoderLift(cmd.LIFT_SPEED, (5)*(-1), 2.0);
 
 
         // 4) Hit Jewel
@@ -163,7 +163,7 @@ public class RedRight extends LinearOpMode
 
 
         // 7) Place Block
-        cmd.encoderLift(cmd.LIFT_SPEED, -5, 1.0);
+        cmd.encoderLift(cmd.LIFT_SPEED, 0, 1.0);
 
         robot.leftClaw.setPosition(0.9);
         robot.rightClaw.setPosition(0.1);
