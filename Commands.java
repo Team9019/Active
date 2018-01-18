@@ -37,6 +37,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Hardware;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 public class Commands
 {
@@ -52,11 +57,18 @@ public class Commands
     public static final double     JWL_DST                 = 2;
     public static boolean blueFound = false;
     public static boolean redFound = false;
+    //public int colNo = 0;
+   // public int cameraMonitorViewId;
+
+
+
 
     private ElapsedTime runtime  = new ElapsedTime();
 
     LinearOpMode opMode;
     private HardRobot robot;
+
+  //  public VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
     /* Constructor */
     public Commands(LinearOpMode opMode, HardRobot nrobot)
@@ -143,7 +155,7 @@ this.robot = nrobot;
 
             // reset the timeout time and start motion.
             runtime.reset();
-            robot.liftMotor.setPower(Math.abs(speed));
+            robot.liftMotor.setPower(speed);
 
             while (opMode.opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
@@ -239,5 +251,137 @@ this.robot = nrobot;
 
         }
     }
+//    public int senseImage (double timeoutS)
+//    {
+////        //*********************************************************************************
+////        //Move to HardRobot
+////
+////        //In competition, no need to show the image on the RC.  Turn monitor off to save power
+////        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+////
+////        //While testing, display the image on the RC
+//       int cameraMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
+//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+////
+////        parameters.vuforiaLicenseKey = "AcI+TRj/////AAAAGUv8hVend0uFnM4Ru7qX3jVlRJ/McRWRQRwN8wHj00l9FqHhP+5CEKYpYNXs07Qng6Sw1ODIrS61iZiHxIye+6WAFbNYPmwo+1Lz4Dv8xyjxRofipuqYGRiPmkpMzffvDuui09EovmX26ifs74KVG5Zn7Xb6BaTS0wUadKFWlSFv73dQrDApmZGpd21bPe9Qv0Nrxhy9TN6Ztg3GQ0uoi1GRRpbTOSQ/Q9tBQJKuw17nfHZAkg+fJ3Jm33HV+DZUUNUpF6eiOFx2RL+xKOUlSLvg9c+VEZcHeY12PPl9docNYafMUJdZG2aDCASJWM6qbyjVN4OgIgOEyufTBOu5KBmejLMm/q+mE7m+2H1EVbOw";
+////        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+////        //*********************************************************************************
+//
+//        int colNo=0;
+//
+//        VuforiaLocalizer vuforia = null;
+//        VuforiaTrackables targets;
+//        VuforiaTrackable target;
+//        RelicRecoveryVuMark image;
+//
+//        //Add reference to "robot." to parameters
+//
+//        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(robot.cameraMonitorViewId);
+//       // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+//       // cameraMonitorViewId = HardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", HardwareMap.appContext.getPackageName());
+//        vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+//        parameters.vuforiaLicenseKey = "AZGEc0X/////AAAAmbWyZAFueElMrS8XcNrobcsNYjwGxKroakvnq7IXzcqEMsGw0rjlgAhYqzKUPOMBRcNsrDdPZDNZFSxpgvFSEgaSB0rgh/u62j/j+irea/y8k1mRGcUKOCiwWqZ10Nrz7BuX+0q9qBQltpsqLE0pPJd1HojcBAsyVzY2iuiWakyK4d8SZo4GMA5ciboxmfqw6SOkSUsLpBrJVtE0eF02xgpjAHSORECriS9dmNhulQsGEyxjDBVdgNa65OFG58CSUmwrDFjGSpqpWqkZRUXbULLZr4l42paP2mmct7tP9poRhAc/eDkJl6gD4YxbEoS1PX1uDCcgJ7zSzWJ0xW+2mbh2rOGRscXucHa/Yg2P820w";
+//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+//        targets = vuforia.loadTrackablesFromAsset("RelicVuMark");
+//        target = targets.get(0);
+//
+//        opMode.telemetry.addData("Action", "Sensing Crypto Key...");
+//        opMode.telemetry.update();
+//
+//        targets.activate();
+//
+//        runtime.reset();
+//        //Add check for colNo when moving to Commands.  This will prevent waiting the full timeout
+//        while (runtime.seconds()<timeoutS) // && colNo == 0)
+//        {
+//            image = RelicRecoveryVuMark.from(target);
+//
+//            if (image == RelicRecoveryVuMark.LEFT)
+//            {
+//                colNo = 1;
+//            }
+//            else if (image == RelicRecoveryVuMark.CENTER)
+//            {
+//                colNo = 2;
+//            }
+//            else if (image == RelicRecoveryVuMark.RIGHT)
+//            {
+//                colNo = 3;
+//            }
+//
+//            if (colNo != 0)
+//            {
+//                opMode.telemetry.addData("Detected", "Key found for column " + colNo);
+//            }
+//            else
+//            {
+//               opMode.telemetry.addData("VuMark", "not visible");
+//            }
+//            opMode.telemetry.update();
+//        }
+//        targets.deactivate();
+//
+//       // telemetry.addData("Action", "Sensing Crypto Key Complete!");
+//          opMode.telemetry.update();
+//
+//        return colNo;
+//    }
+
+    public void dropArm()
+    {
+        robot.colorServo.setPosition(0.73);
+    }
+    public void senseColor() {
+        robot.Color.enableLed(true);
+        runtime.reset();
+        while ( opMode.opModeIsActive() && runtime.seconds() < 2)
+        {
+            opMode.telemetry.addData("SenseJewel", "Red:" + robot.Color.red());
+            opMode.telemetry.addData("SenseJewel", "Blue:" + robot.Color.blue());
+            opMode.telemetry.update();
+
+            opMode.idle();
+        }
+
+        if (robot.Color.red() >= 1 && robot.Color.red() <= 100)
+        {
+            redFound = true;
+        }
+        if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100)
+        {
+            blueFound = true;
+        }
+        robot.Color.enableLed(false);
+
+    }
+    public void liftBlock() {
+        robot.leftClaw.setPosition(0.1);
+        robot.rightClaw.setPosition(0.9);
+        robot.lunderClaw.setPosition(0.4);
+        robot.runderClaw.setPosition(0.3);
+        opMode.sleep(200);
+
+        encoderLift(LIFT_SPEED, 8, 2.0);
+
+    }
+    public void retractArm() {
+        robot.colorServo.setPosition(0.1);
+        opMode.sleep(500);
+    }
+    public void placeBlock()
+    {
+        encoderLift(LIFT_SPEED, -6, 1.0);
+
+        robot.leftClaw.setPosition(0.9);
+        robot.rightClaw.setPosition(0.1);
+        robot.lunderClaw.setPosition(0.1);
+        robot.runderClaw.setPosition(0.7);
+
+        encoderDrive(DRIVE_SPEED, 4, 4, 1.0);
+        encoderDrive(DRIVE_SPEED, -3,-3,1.0);
+        encoderDrive(DRIVE_SPEED, 4, 4, 1.0);
+        encoderDrive(DRIVE_SPEED, -3,-3,1.0);
+    }
  }
+
 

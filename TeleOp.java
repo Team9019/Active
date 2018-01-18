@@ -170,7 +170,7 @@ public class TeleOp extends LinearOpMode
             }
             if (gamepad2.left_trigger == 1)
             {
-                robot.lunderClaw.setPosition(0.5);
+                robot.lunderClaw.setPosition(0.4);
             }
             else
             {
@@ -178,16 +178,13 @@ public class TeleOp extends LinearOpMode
             }
             if (gamepad2.right_trigger == 1)
             {
-                robot.runderClaw.setPosition(0.5);
+                robot.runderClaw.setPosition(0.3);
             }
             else
             {
-                robot.runderClaw.setPosition(0.9);
+                robot.runderClaw.setPosition(0.8);
             }
-            if (gamepad1.a)
-            {
-                armServo.setPosition(0.115);
-            }
+
 
             // Send calculated power to wheels
             leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));

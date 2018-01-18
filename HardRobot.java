@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 
 
 public class HardRobot
@@ -54,14 +54,14 @@ public class HardRobot
     public Servo runderClaw;
     public Servo colorServo;
     public ModernRoboticsI2cColorSensor Color;
+//    public int cameraMonitorViewId;
 
-    // public static final double MID_SERVO       =  0.5 ;
-    //public static final double ARM_UP_POWER    =  0.45 ;
-    //public static final double ARM_DOWN_POWER  = -0.45 ;
+
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
+
 
     /* Constructor */
     public HardRobot()
@@ -74,6 +74,8 @@ public class HardRobot
     {
         // Save reference to Hardware map
         hwMap = ahwMap;
+ //        cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // Define and Initialize Motors
         leftFront  = hwMap.get(DcMotor.class, "leftFront");
@@ -102,8 +104,8 @@ public class HardRobot
 
         leftClaw.setPosition(0.9);
         rightClaw.setPosition(0.1);
-        lunderClaw.setPosition(0.5);
-        runderClaw.setPosition(0.5);
+        lunderClaw.setPosition(0.4);
+        runderClaw.setPosition(0.3);
         colorServo.setPosition(0.1);
 
         // Set all motors to zero power
@@ -112,6 +114,20 @@ public class HardRobot
         leftBack.setPower(0);
         rightBack.setPower(0);
         liftMotor.setPower(0);
+
+        //*********************************************************************************
+        //Move to HardRobot
+
+        //In competition, no need to show the image on the RC.  Turn monitor off to save power
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        //While testing, display the image on the RC
+       // int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+       // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+//        parameters.vuforiaLicenseKey = "AcI+TRj/////AAAAGUv8hVend0uFnM4Ru7qX3jVlRJ/McRWRQRwN8wHj00l9FqHhP+5CEKYpYNXs07Qng6Sw1ODIrS61iZiHxIye+6WAFbNYPmwo+1Lz4Dv8xyjxRofipuqYGRiPmkpMzffvDuui09EovmX26ifs74KVG5Zn7Xb6BaTS0wUadKFWlSFv73dQrDApmZGpd21bPe9Qv0Nrxhy9TN6Ztg3GQ0uoi1GRRpbTOSQ/Q9tBQJKuw17nfHZAkg+fJ3Jm33HV+DZUUNUpF6eiOFx2RL+xKOUlSLvg9c+VEZcHeY12PPl9docNYafMUJdZG2aDCASJWM6qbyjVN4OgIgOEyufTBOu5KBmejLMm/q+mE7m+2H1EVbOw";
+//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        //*********************************************************************************
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.

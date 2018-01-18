@@ -30,9 +30,16 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  *   -
@@ -59,12 +66,8 @@ public class RedRight extends LinearOpMode
     private static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
-//    private static final double     DRIVE_SPEED             = 0.4;
-//    private static final double     TURN_SPEED              = 0.5;
-//    private static final double     LIFT_SPEED              = 0.7;
-//    private static final double     JWL_DST                 = 3;
-//    private static boolean blueFound = false;
-//    private static boolean redFound = false;
+    private int colNo = 0;
+    private int imageAdj = 0;
 
     @Override
     public void runOpMode()
@@ -96,41 +99,26 @@ public class RedRight extends LinearOpMode
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        senseImage(2);
+        if (colNo == 1)
+        {
+            imageAdj = 6;
+        }
+        else if (colNo == 3)
+        {
+            imageAdj = (-6);
+        }
 
         // 1) Drop Arm
-        robot.colorServo.setPosition(0.73);
+        cmd.dropArm();
+
 
 
         // 2) Sense Color
-        robot.Color.enableLed(true);
-        runtime.reset();
-        while ( opModeIsActive() && runtime.seconds() < 2)
-        {
-            telemetry.addData("SenseJewel", "Red:" + robot.Color.red());
-            telemetry.addData("SenseJewel", "Blue:" + robot.Color.blue());
-            telemetry.update();
+        cmd.senseColor();
 
-            idle();
-        }
-
-        if (robot.Color.red() >= 1 && robot.Color.red() <= 100)
-        {
-            cmd.redFound = true;
-        }
-        if (robot.Color.blue() >= 1 && robot.Color.blue() <= 100)
-        {
-            cmd.blueFound = true;
-        }
-        robot.Color.enableLed(false);
-
-
-        // 3) Lift Block
-        robot.leftClaw.setPosition(0.1);
-        robot.rightClaw.setPosition(0.9);
-        sleep(200);
-
-        cmd.encoderLift(cmd.LIFT_SPEED, (5)*(-1), 2.0);
-
+//        // 3) Lift Block
+        cmd.liftBlock();
 
         // 4) Hit Jewel
         if (cmd.redFound)
@@ -144,9 +132,7 @@ public class RedRight extends LinearOpMode
 
 
         // 5) Retract Arm
-        robot.colorServo.setPosition(0.0);
-        sleep(500);
-
+        cmd.retractArm();
 
         // 6) Forward/Right/Forward
         if (cmd.redFound) {
@@ -157,198 +143,83 @@ public class RedRight extends LinearOpMode
         }
 
 
-        cmd.encoderSlide(cmd.DRIVE_SPEED, 12, "L" , 2.0);
+        cmd.encoderSlide(cmd.DRIVE_SPEED, 10 + imageAdj, "L" , 2.0);
 
         cmd.encoderDrive(cmd.DRIVE_SPEED, 6, 6, 2.0);
 
 
         // 7) Place Block
-        cmd.encoderLift(cmd.LIFT_SPEED, 0, 1.0);
+        cmd.placeBlock();
 
-        robot.leftClaw.setPosition(0.9);
-        robot.rightClaw.setPosition(0.1);
-        sleep(200);
-        cmd.encoderDrive(cmd.DRIVE_SPEED, 2, 2, 1.0);
-cmd.encoderDrive(cmd.DRIVE_SPEED, -2,-2,1.0);
     }
-//    public void encoderDrive(double speed,
-//                             double leftInches, double rightInches,
-//                             double timeoutS) {
-//        int newLeftFrontTarget;
-//        int newLeftBackTarget;
-//        int newRightFrontTarget;
-//        int newRightBackTarget;
-//
-//        // Ensure that the opmode is still active
-//        if (opModeIsActive()) {
-//
-//            // Determine new target position, and pass to motor controller
-//            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-//            newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-//            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-//            newRightBackTarget = robot.rightBack.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-//            robot.leftFront.setTargetPosition(newLeftFrontTarget);
-//            robot.leftBack.setTargetPosition(newLeftBackTarget);
-//            robot.rightFront.setTargetPosition(newRightFrontTarget);
-//            robot.rightBack.setTargetPosition(newRightBackTarget);
-//
-//            // Turn On RUN_TO_POSITION
-//            robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            // reset the timeout time and start motion.
-//            runtime.reset();
-//            robot.leftFront.setPower(Math.abs(speed));
-//            robot.leftBack.setPower(Math.abs(speed));
-//            robot.rightFront.setPower(Math.abs(speed));
-//            robot.rightBack.setPower(Math.abs(speed));
-//
-//
-//            while (opModeIsActive() &&
-//                    (runtime.seconds() < timeoutS) &&
-//                    (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
-//
-//
-//                idle();
-//            }
-//
-//
-//            // Stop all motion;
-//            robot.leftFront.setPower(0);
-//            robot.leftBack.setPower(0);
-//            robot.rightFront.setPower(0);
-//            robot.rightBack.setPower(0);
-//
-//            // Turn off RUN_TO_POSITION
-//            robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//
-//        }
-//    }
-//    public void encoderLift(double speed, double liftInches,
-//                            double timeoutS) {
-//        int newLiftTarget;
-//
-//
-//        // Ensure that the opmode is still active
-//        if (opModeIsActive()) {
-//            // Determine new target position, and pass to motor controller
-//            newLiftTarget = robot.liftMotor.getCurrentPosition() + (int)(liftInches * COUNTS_PER_INCH);
-//
-//            robot.liftMotor.setTargetPosition(newLiftTarget);
-//
-//
-//           // Turn On RUN_TO_POSITION
-//            robot.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//
-//            // reset the timeout time and start motion.
-//           runtime.reset();
-//            robot.liftMotor.setPower(Math.abs(speed));
-//
-//
-//            while (opModeIsActive() &&
-//                    (runtime.seconds() < timeoutS) &&
-//                    (robot.liftMotor.isBusy() )) {
-//
-//                // Display it for the driver.
-//                telemetry.addData("Path1",  "Running to %7d", newLiftTarget);
-//                telemetry.addData("Path2",  "Running at %7d", robot.liftMotor.getCurrentPosition());
-//
-//                telemetry.update();
-//                idle();
-//            }
-//
-//
-//            // Stop all motion;
-//            robot.liftMotor.setPower(0);
-//
-//
-//            // Turn off RUN_TO_POSITION
-//     robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//
-//            //  sleep(250);   // optional pause after each move
-//        }
-//    }
-//    public void encoderSlide(double speed,
-//                             double Inches, String Direction,
-//                             double timeoutS) {
-//
-//        int newLeftFrontTarget;
-//        int newLeftBackTarget;
-//        int newRightFrontTarget;
-//        int newRightBackTarget;
-//
-//        // Ensure that the opmode is still active
-//        if (opModeIsActive())
-//        {
-//
-//            // Determine new target position, and pass to motor controller
-//            if (Direction.equals("L"))
-//            {
-//                newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
-//                newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
-//                newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
-//                newRightBackTarget = robot.rightBack.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
-//            }
-//            else // (Direction.equals("R"))
-//            {
-//                newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
-//                newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
-//                newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int) (-Inches * COUNTS_PER_INCH);
-//                newRightBackTarget = robot.rightBack.getCurrentPosition() + (int) (Inches * COUNTS_PER_INCH);
-//            }
-//            robot.leftFront.setTargetPosition(newLeftFrontTarget);
-//            robot.leftBack.setTargetPosition(newLeftBackTarget);
-//            robot.rightFront.setTargetPosition(newRightFrontTarget);
-//            robot.rightBack.setTargetPosition(newRightBackTarget);
-//
-//            // Turn On RUN_TO_POSITION
-//            robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            // reset the timeout time and start motion.
-//            runtime.reset();
-//            robot.leftFront.setPower(Math.abs(speed));
-//            robot.leftBack.setPower(Math.abs(speed));
-//            robot.rightFront.setPower(Math.abs(speed));
-//            robot.rightBack.setPower(Math.abs(speed));
-//
-//
-//
-//            while (opModeIsActive() &&
-//                    (runtime.seconds() < timeoutS) &&
-//                    (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy()))
-//            {
-//
-//
-//                idle();
-//            }
-//
-//
-//            // Stop all motion;
-//            robot.leftFront.setPower(0);
-//            robot.leftBack.setPower(0);
-//            robot.rightFront.setPower(0);
-//            robot.rightBack.setPower(0);
-//
-//            // Turn off RUN_TO_POSITION
-//            robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//        }
-//    }
+    public int senseImage (double timeoutS)
+    {
+        //*********************************************************************************
+        //Move to HardRobot
+
+        //In competition, no need to show the image on the RC.  Turn monitor off to save power
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        //While testing, display the image on the RC
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        parameters.vuforiaLicenseKey = "AcI+TRj/////AAAAGUv8hVend0uFnM4Ru7qX3jVlRJ/McRWRQRwN8wHj00l9FqHhP+5CEKYpYNXs07Qng6Sw1ODIrS61iZiHxIye+6WAFbNYPmwo+1Lz4Dv8xyjxRofipuqYGRiPmkpMzffvDuui09EovmX26ifs74KVG5Zn7Xb6BaTS0wUadKFWlSFv73dQrDApmZGpd21bPe9Qv0Nrxhy9TN6Ztg3GQ0uoi1GRRpbTOSQ/Q9tBQJKuw17nfHZAkg+fJ3Jm33HV+DZUUNUpF6eiOFx2RL+xKOUlSLvg9c+VEZcHeY12PPl9docNYafMUJdZG2aDCASJWM6qbyjVN4OgIgOEyufTBOu5KBmejLMm/q+mE7m+2H1EVbOw";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        //*********************************************************************************
 
 
 
+        VuforiaLocalizer vuforia = null;
+        VuforiaTrackables targets;
+        VuforiaTrackable target;
+        RelicRecoveryVuMark image;
+
+        //Add reference to "robot." to parameters
+        vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        targets = vuforia.loadTrackablesFromAsset("RelicVuMark");
+        target = targets.get(0);
+
+        telemetry.addData("Action", "Sensing Crypto Key...");
+        telemetry.update();
+
+        targets.activate();
+
+        runtime.reset();
+        //Add check for colNo when moving to Commands.  This will prevent waiting the full timeout
+        while (runtime.seconds()<timeoutS) // && colNo == 0)
+        {
+            image = RelicRecoveryVuMark.from(target);
+
+            if (image == RelicRecoveryVuMark.LEFT)
+            {
+                colNo = 1;
+            }
+            else if (image == RelicRecoveryVuMark.CENTER)
+            {
+                colNo = 2;
+            }
+            else if (image == RelicRecoveryVuMark.RIGHT)
+            {
+                colNo = 3;
+            }
+
+            if (colNo != 0)
+            {
+                telemetry.addData("Detected", "Key found for column " + colNo);
+            }
+            else
+            {
+                telemetry.addData("VuMark", "not visible");
+            }
+            telemetry.update();
+        }
+        targets.deactivate();
+
+        telemetry.addData("Action", "Sensing Crypto Key Complete!");
+        telemetry.update();
+
+        return colNo;
+    }
 }
