@@ -54,7 +54,7 @@ public class HardRobot
     public Servo runderClaw;
     public Servo colorServo;
     public ModernRoboticsI2cColorSensor Color;
-//    public int cameraMonitorViewId;
+
 
 
 
@@ -74,8 +74,6 @@ public class HardRobot
     {
         // Save reference to Hardware map
         hwMap = ahwMap;
- //        cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // Define and Initialize Motors
         leftFront  = hwMap.get(DcMotor.class, "leftFront");
@@ -115,29 +113,6 @@ public class HardRobot
         rightBack.setPower(0);
         liftMotor.setPower(0);
 
-        //*********************************************************************************
-        //Move to HardRobot
-
-        //In competition, no need to show the image on the RC.  Turn monitor off to save power
-        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        //While testing, display the image on the RC
-       // int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
-       // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-
-//        parameters.vuforiaLicenseKey = "AcI+TRj/////AAAAGUv8hVend0uFnM4Ru7qX3jVlRJ/McRWRQRwN8wHj00l9FqHhP+5CEKYpYNXs07Qng6Sw1ODIrS61iZiHxIye+6WAFbNYPmwo+1Lz4Dv8xyjxRofipuqYGRiPmkpMzffvDuui09EovmX26ifs74KVG5Zn7Xb6BaTS0wUadKFWlSFv73dQrDApmZGpd21bPe9Qv0Nrxhy9TN6Ztg3GQ0uoi1GRRpbTOSQ/Q9tBQJKuw17nfHZAkg+fJ3Jm33HV+DZUUNUpF6eiOFx2RL+xKOUlSLvg9c+VEZcHeY12PPl9docNYafMUJdZG2aDCASJWM6qbyjVN4OgIgOEyufTBOu5KBmejLMm/q+mE7m+2H1EVbOw";
-//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        //*********************************************************************************
-
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-
-
-        // Define and initialize ALL installed servos.
-        //  leftClaw  = hwMap.get(Servo.class, "left_hand");
-        // rightClaw = hwMap.get(Servo.class, "right_hand");
-        // leftClaw.setPosition(MID_SERVO);
-        // rightClaw.setPosition(MID_SERVO);
     }
  }
 

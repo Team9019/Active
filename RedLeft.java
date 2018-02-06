@@ -59,9 +59,9 @@ public class RedLeft extends LinearOpMode {
     private  Commands         cmd     = new Commands(this, robot);
     private ElapsedTime     runtime = new ElapsedTime();
 
-    private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;    // eg: TETRIX Motor Encoder
-    private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    private static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    private static final double     COUNTS_PER_MOTOR_REV    = 1140 ;
+    private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
+    private static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;
     private static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
     private int colNo = 0;
@@ -73,12 +73,11 @@ public class RedLeft extends LinearOpMode {
 
         /*
          * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
 
         robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -114,7 +113,9 @@ public class RedLeft extends LinearOpMode {
         cmd.senseColor();
 //
         // 3) Lift Block
-        cmd.liftBlock();
+       cmd.liftBlock();
+
+        cmd.encoderLift(cmd.LIFT_SPEED, 10, 2.0);
 //
         // 4) Hit Jewel
         if (cmd.redFound)
@@ -144,34 +145,17 @@ public class RedLeft extends LinearOpMode {
 
         // 7) Place Block
         cmd.placeBlock();
-//
+
     }
 
-    /*
-     *  Method to perfmorm a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
     public int senseImage (double timeoutS)
     {
-        //*********************************************************************************
-        //Move to HardRobot
-
-        //In competition, no need to show the image on the RC.  Turn monitor off to save power
-        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        //While testing, display the image on the RC
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         parameters.vuforiaLicenseKey = "AcI+TRj/////AAAAGUv8hVend0uFnM4Ru7qX3jVlRJ/McRWRQRwN8wHj00l9FqHhP+5CEKYpYNXs07Qng6Sw1ODIrS61iZiHxIye+6WAFbNYPmwo+1Lz4Dv8xyjxRofipuqYGRiPmkpMzffvDuui09EovmX26ifs74KVG5Zn7Xb6BaTS0wUadKFWlSFv73dQrDApmZGpd21bPe9Qv0Nrxhy9TN6Ztg3GQ0uoi1GRRpbTOSQ/Q9tBQJKuw17nfHZAkg+fJ3Jm33HV+DZUUNUpF6eiOFx2RL+xKOUlSLvg9c+VEZcHeY12PPl9docNYafMUJdZG2aDCASJWM6qbyjVN4OgIgOEyufTBOu5KBmejLMm/q+mE7m+2H1EVbOw";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
         //*********************************************************************************
-
-
 
         VuforiaLocalizer vuforia = null;
         VuforiaTrackables targets;

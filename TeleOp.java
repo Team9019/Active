@@ -57,6 +57,9 @@ public class TeleOp extends LinearOpMode
     private Servo armServo;
     private Servo relicServo;
 
+    double leftPower = 0.75;
+    double rightPower = 0.75;
+    double slidePower = 0.75;
 
     @Override
     public void runOpMode() {
@@ -83,8 +86,12 @@ public class TeleOp extends LinearOpMode
         relicServo = hardwareMap.get(Servo.class, "relicServo");
 
 
-        //  robot.Color.enableLed(true);
-     //   robot.Color.enableLed(false);
+        robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -103,10 +110,10 @@ public class TeleOp extends LinearOpMode
         while (opModeIsActive())
         {
             // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
+           // double leftPower;
+           // double rightPower;
             double liftPower;
-            double slidePower;
+           // double slidePower;
             double armPower;
 
              leftPower  = -gamepad1.left_stick_y ;
@@ -143,16 +150,6 @@ public class TeleOp extends LinearOpMode
             {
                 armServo.setPosition(0.02);
             }
-            //if (gamepad1.a)
-            {
-               //relicServo.setPosition(0.5);
-            }
-            //if (gamepad2.a)
-            {
-                //relicServo.setPosition(0.2);
-            }
-
-           // }
             if (gamepad2.b)
             {
                 armServo.setPosition(0.12);
@@ -195,10 +192,6 @@ public class TeleOp extends LinearOpMode
             liftMotor.setPower(liftPower);
             armMotor.setPower(armPower);
 
-            // Show the elapsed game time and wheel power.
-           // telemetry.addData("Status", "Run Time: " + runtime.toString());
-           // telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower, slidePower, liftPower);
-           // telemetry.update();
         }
     }
 }
