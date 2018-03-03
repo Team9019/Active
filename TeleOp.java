@@ -66,7 +66,6 @@ public class TeleOp extends LinearOpMode
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
         robot.init(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -85,14 +84,12 @@ public class TeleOp extends LinearOpMode
         armServo= hardwareMap.get(Servo.class, "armServo");
         relicServo = hardwareMap.get(Servo.class, "relicServo");
 
-
         robot.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -125,26 +122,21 @@ public class TeleOp extends LinearOpMode
             if (gamepad2.left_bumper)
             {
                 robot.leftClaw.setPosition(0.1);
-
             }
             else
             {
                 robot.leftClaw.setPosition(0.9);
-
             }
             if (gamepad2.right_bumper) {
                 robot.rightClaw.setPosition(0.9);
-
             }
             else
             {
                 robot.rightClaw.setPosition(0.1);
-
             }
             if (gamepad2.y)
             {
                 armServo.setPosition(0.05);
-                //armServo.setPosition(0.08);
             }
             if (gamepad2.x)
             {
@@ -158,12 +150,10 @@ public class TeleOp extends LinearOpMode
 
             {
                 relicServo.setPosition(0.8);
-
             }
             else
             {
                 relicServo.setPosition(0.35);
-
             }
             if (gamepad2.left_trigger == 1)
             {
@@ -181,7 +171,7 @@ public class TeleOp extends LinearOpMode
             {
                 robot.runderClaw.setPosition(0.8);
             }
-
+            if (gamepad1.left_trigger == 1)
 
             // Send calculated power to wheels
             leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));

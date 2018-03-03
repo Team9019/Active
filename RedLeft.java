@@ -120,7 +120,7 @@ public class RedLeft extends LinearOpMode {
         // 4) Hit Jewel
         if (cmd.redFound)
         {
-                cmd.encoderDrive(cmd.DRIVE_SPEED, -cmd.JWL_DST, -cmd.JWL_DST, 2.0);
+                cmd.encoderDrive(cmd.DRIVE_SPEED, (-cmd.JWL_DST), (-cmd.JWL_DST), 2.0);
         }
         if (cmd.blueFound)
         {
