@@ -117,6 +117,7 @@ public class RedLeft extends LinearOpMode {
 
         //cmd.encoderLift(cmd.LIFT_SPEED, 10, 2.0);
 
+
         // 4) Hit Jewel
         if (cmd.redFound)
         {
