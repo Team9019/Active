@@ -111,12 +111,12 @@ public class RedLeft extends LinearOpMode {
 
         // 2) Sense Color
         cmd.senseColor();
-//
-        // 3) Lift Block
-       cmd.liftBlock();
 
-        cmd.encoderLift(cmd.LIFT_SPEED, 10, 2.0);
-//
+        // 3) Lift Block
+        cmd.liftBlock();
+
+        //cmd.encoderLift(cmd.LIFT_SPEED, 10, 2.0);
+
         // 4) Hit Jewel
         if (cmd.redFound)
         {

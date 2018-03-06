@@ -171,7 +171,7 @@ public class TeleOp extends LinearOpMode
             {
                 robot.runderClaw.setPosition(0.8);
             }
-            if (gamepad1.left_trigger == 1)
+            //if (gamepad1.left_trigger == 1)
 
             // Send calculated power to wheels
             leftFront.setPower(Range.clip(leftPower + slidePower, -1.0, 1.0));

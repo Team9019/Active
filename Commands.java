@@ -265,11 +265,19 @@ this.robot = nrobot;
             opMode.idle();
         }
 
-        if (robot.Color.red() >= 3 && robot.Color.red() <= 100)
+        //if (robot.Color.red() >= 3 && robot.Color.red() <= 100)
+        //{
+        //    redFound = true;
+        //}
+        //if (robot.Color.blue() >= 3 && robot.Color.blue() <= 100)
+        //{
+        //    blueFound = true;
+        //}
+        if (robot.Color.red() > robot.Color.blue())
         {
             redFound = true;
         }
-        if (robot.Color.blue() >= 3 && robot.Color.blue() <= 100)
+        else
         {
             blueFound = true;
         }
