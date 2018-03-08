@@ -112,11 +112,15 @@ public class RedLeft extends LinearOpMode {
         // 2) Sense Color
         cmd.senseColor();
 
+        telemetry.addData("RedFound", "Red:" + cmd.redFound);
+        telemetry.addData("BlueFound", "Blue:" +   cmd.blueFound);
+        telemetry.update();
+        sleep(500);
+
         // 3) Lift Block
         cmd.liftBlock();
 
         //cmd.encoderLift(cmd.LIFT_SPEED, 10, 2.0);
-
 
         // 4) Hit Jewel
         if (cmd.redFound)
@@ -130,13 +134,14 @@ public class RedLeft extends LinearOpMode {
 
         // 5) Retract Arm
         cmd.retractArm();
-//
+
         // 6) Forward/Right/Forward
         if (cmd.redFound) {
-            cmd.encoderDrive(cmd.DRIVE_SPEED, (-cmd.JWL_DST + 23 + imageAdj), (-cmd.JWL_DST + 23 + imageAdj), 4.0);
+            //cmd.encoderDrive(cmd.DRIVE_SPEED, (-cmd.JWL_DST + 23 + imageAdj), (-cmd.JWL_DST + 23 + imageAdj), 4.0);
+            cmd.encoderDrive(cmd.DRIVE_SPEED, (cmd.JWL_DST + 23 +4 + imageAdj), (cmd.JWL_DST + 23 +4 + imageAdj), 4.0);
         }
         else if (cmd.blueFound) {
-            cmd.encoderDrive(cmd.DRIVE_SPEED, (cmd.JWL_DST + 23 + imageAdj), (cmd.JWL_DST + 23 + imageAdj), 4.0);
+            cmd.encoderDrive(cmd.DRIVE_SPEED, (-cmd.JWL_DST + 23 +4 + imageAdj), (-cmd.JWL_DST + 23 +4 + imageAdj), 4.0);
         }
 
         cmd.encoderSlide(cmd.DRIVE_SPEED, 2, "L", 2.0);

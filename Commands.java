@@ -276,10 +276,12 @@ this.robot = nrobot;
         if (robot.Color.red() > robot.Color.blue())
         {
             redFound = true;
+            blueFound=false;
         }
         else
         {
             blueFound = true;
+            redFound=false;
         }
         robot.Color.enableLed(false);
 
